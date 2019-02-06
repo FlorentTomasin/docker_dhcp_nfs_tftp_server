@@ -14,8 +14,8 @@ default-lease-time 600;
 max-lease-time 7200;
 
 # Uncomment the following options to enable bootp to dhcp
-#allow booting;
-#allow bootp;
+allow booting;
+allow bootp;
 
 # The ddns-updates-style parameter controls whether or not the server will
 # attempt to do a DNS update when a lease is confirmed. We default to the
@@ -113,3 +113,8 @@ ddns-update-style none;
 #    range 10.0.29.10 10.0.29.230;
 #  }
 #}
+
+subnet 169.254.1.0 netmask 255.255.255.0 {
+  range  169.254.1.2 169.254.1.10;
+}
+

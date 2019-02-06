@@ -20,7 +20,7 @@ fi
 docker run --rm -ti --privileged \
 ${DOCKER_NETWORK} \
 -v ${NFS_DIR}:/nfs \
--v /${TFTP_DIR}:/var/tftpboot \
+-v ${TFTP_DIR}:/var/tftpboot \
 -v ${PWD}/etc/exports:/etc/exports \
 -v ${PWD}/etc/dhcp/dhcpd.conf:/etc/dhcp/dhcpd.conf \
 -v ${PWD}/etc/network/interfaces:/etc/network/interfaces \
