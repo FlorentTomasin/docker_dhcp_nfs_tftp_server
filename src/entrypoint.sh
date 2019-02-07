@@ -10,14 +10,42 @@ stop()
   # Let's shutdown cleanly
   echo "SIGTERM caught, terminating NFS process(es)..."
   /usr/sbin/exportfs -uav
-  pid1=`pidof rpc.nfsd`
-  pid2=`pidof rpc.mountd`
+  pid_rpc_nfsd=`pidof rpc.nfsd`
+  echo "Terminating: pid_rpc_nfsd=${pid_rpc_nfsd}..."
+  while [ ! -z ${pid_rpc_nfsd} ] ; do
+      kill -TERM ${pid_rpc_nfsd} > /dev/null 2>&1
+      pid_rpc_nfsd=`pidof rpc.nfsd`
+  done
+  echo "...terminated"
+  pid_rpc_mountd=`pidof rpc.mountd`
+  echo "Terminating: pid_rpc_mountd=${pid_rpc_mountd}..."
+  while [ ! -z ${pid_rpc_mountd} ] ; do
+      kill -TERM ${pid_rpc_mountd} > /dev/null 2>&1
+      pid_rpc_mountd=`pidof rpc.mountd`
+  done
+  echo "...terminated"
   # For IPv6 bug:
-  pid3=`pidof rpcbind`
-  pid4=`pidof dhcpd`
-  pid5=`pidof in.tftpd`
-  kill -TERM $pid1 $pid2 $pid3 $pid4 $pid5 > /dev/null 2>&1
-  echo "Terminated."
+  pid_rpc_bind=`pidof rpcbind`
+  echo "Terminating: pid_rpc_bind=${pid_rpc_bind}..."
+  while [ ! -z ${pid_rpc_bind} ] ; do
+      kill -TERM ${pid_rpc_bind} > /dev/null 2>&1
+      pid_rpc_bind=`pidof rpcbind`
+  done
+  echo "...terminated"
+  pid_dhcpd=`pidof dhcpd`
+  echo "Terminating: pid_dhcpd=${pid_dhcpd}..."
+  while [ ! -z ${pid_dhcpd} ] ; do
+      kill -TERM ${pid_dhcpd} > /dev/null 2>&1
+      pid_dhcpd=`pidof dhcpd`
+  done
+  echo "...terminated"
+  pid_in_tftpd=`pidof in.tftpd`
+  echo "Terminating: pid_in_tftpd=${pid_in_tftpd}..."
+  while [ ! -z ${pid_in_tftpd} ] ; do
+      kill -TERM ${pid_in_tftpd} > /dev/null 2>&1
+      pid_in_tftpd=`pidof in.tftpd`
+  done
+  echo "...terminated"
   exit
 }
 
@@ -29,7 +57,7 @@ echo "TFTP init..."
 in.tftpd -l -c -s /var/tftpboot
 # NFS config
 echo "Starting rpcbind..."
-/sbin/rpcbind -w
+/sbin/rpcbind -s
 echo "Displaying rpcbind status..."
 /sbin/rpcinfo
 echo "Starting NFS in the background..."
@@ -60,4 +88,3 @@ if test "${nfsgood}" -ne 0; then
 else
     echo "NFS failed to start"
 fi
-#su root
