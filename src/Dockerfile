@@ -1,7 +1,5 @@
 FROM alpine:edge
 
-COPY entrypoint.sh /entrypoint.sh
-
 # Install alpine requirements for NFS, DHCP, TFTP
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/releases/x86_64/" >> /etc/apk/repositories && \
     apk add -U -v --no-cache --no-progress \
@@ -16,9 +14,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/releases/x86_64/" >> /etc/ap
     # Configure DHCP
     touch /var/lib/dhcp/dhcpd.leases && \
     # Set corret tftpboot permission
-    chmod 777 /var/tftpboot && \
-    # Set correct entrypoint permission
-    chmod u+x /entrypoint.sh
+    chmod 777 /var/tftpboot
 
 # Export the NFS server port
 EXPOSE 111/tcp \
@@ -33,5 +29,9 @@ WORKDIR /
 
 VOLUME ["/nfs"]
 VOLUME ["/etc/dhcp"]
+
+COPY entrypoint.sh /entrypoint.sh
+    # Set correct entrypoint permission
+RUN chmod u+x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
