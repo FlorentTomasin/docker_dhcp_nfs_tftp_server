@@ -19,9 +19,10 @@ fi
 # --name=nfs
 docker run --rm -ti --privileged \
 ${DOCKER_NETWORK} \
+-v ${TFTP_DIR}:/srv/tftp \
 -v ${NFS_DIR}:/nfs \
--v ${TFTP_DIR}:/var/tftpboot \
 -v ${PWD}/etc/exports:/etc/exports \
+-v ${PWD}/etc/default/isc-dhcp-server:/etc/default/isc-dhcp-server \
 -v ${PWD}/etc/dhcp/dhcpd.conf:/etc/dhcp/dhcpd.conf \
 -v ${PWD}/etc/network/interfaces:/etc/network/interfaces \
 ${DOCKER_IMAGE}:${DOCKER_TAG}

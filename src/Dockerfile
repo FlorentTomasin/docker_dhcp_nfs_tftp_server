@@ -1,22 +1,25 @@
-FROM alpine:edge
+FROM debian:buster-slim
 
-# Install alpine requirements for NFS, DHCP, TFTP
-RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/releases/x86_64/" >> /etc/apk/repositories && \
-    apk add -U -v --no-cache --no-progress \
-        nfs-utils \
-        dhcp \
-        tftp-hpa && \
-    # Clean Alpine package list
-    rm -rf /var/cache/apk/* /tmp/* && \
-    rm -f /sbin/halt /sbin/poweroff /sbin/reboot && \
-    # Make the NFS server auto start
-    mkdir -p /var/lib/nfs/v4recovery && \
+ENV DEBIAN_FRONTEND noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN true
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        isc-dhcp-server \
+        tftpd-hpa \
+        nfs-kernel-server && \
+    # Clean rootfs
+    apt-get clean all && \
+    apt-get autoremove -y && \
+    apt-get purge && \
+    rm -rf /var/lib/{apt,dpkg,cache,log} && \
     # Configure DHCP
     touch /var/lib/dhcp/dhcpd.leases && \
-    # Set corret tftpboot permission
-    chmod 777 /var/tftpboot
+    # Configure rpcbind
+    mkdir -p /run/sendsigs.omit.d && \
+    touch /run/sendsigs.omit.d/rpcbind
 
-# Export the NFS server port
+# Export the NFS server ports
 EXPOSE 111/tcp \
        111/udp \
        2049/tcp \
@@ -27,8 +30,8 @@ EXPOSE 111/tcp \
 
 WORKDIR /
 
-VOLUME ["/nfs"]
 VOLUME ["/etc/dhcp"]
+VOLUME ["/etc/default"]
 
 COPY entrypoint.sh /entrypoint.sh
     # Set correct entrypoint permission
