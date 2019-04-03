@@ -22,6 +22,7 @@ ${DOCKER_NETWORK} \
 -v ${TFTP_DIR}:/srv/tftp \
 -v ${NFS_DIR}:/nfs \
 -v ${PWD}/etc/exports:/etc/exports \
+-v ${PWD}/etc/default/nfs-kernel-server:/etc/default/nfs-kernel-server \
 -v ${PWD}/etc/default/isc-dhcp-server:/etc/default/isc-dhcp-server \
 -v ${PWD}/etc/dhcp/dhcpd.conf:/etc/dhcp/dhcpd.conf \
 -v ${PWD}/etc/network/interfaces:/etc/network/interfaces \
