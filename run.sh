@@ -2,6 +2,12 @@
 
 source env.conf
 
+IS_MODULE=`lsmod | grep -o nfsd`
+if [[ -z "${IS_MODULE}" ]]; then
+	echo "${0}: Missing module nfsd: probing now..."
+	sudo modprobe nfsd
+fi
+
 if [[ ${USE_PORT_MAPPING} != 0 ]]; then
     DOCKER_NETWORK="-p ${PORT_111_TCP}:111/tcp \
                     -p ${PORT_111_UDP}:111/udp \
